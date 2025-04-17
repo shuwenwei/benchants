@@ -116,13 +116,14 @@ func (p *processor) ProcessQuery(q query.Query, _ bool) ([]*query.Stat, error) {
 	var legalNodes = true
 	var err error
 
-	start := time.Now().UnixNano()
+	start := time.Now()
 	if startTimeInMills > 0 {
 		if usingGroupByApi {
+			idx := strings.LastIndex(aggregatePaths[0], ".")
+			device := aggregatePaths[0][:idx]
+			measurement := aggregatePaths[0][idx+1:]
 			splits := strings.Split(aggregatePaths[0], ".")
 			db := splits[0] + "." + splits[1]
-			device := strings.Join(splits[:len(splits)-1], ".")
-			measurement := splits[len(splits)-1]
 			dataSet, err = p.session.ExecuteGroupByQueryIntervalQuery(&db, device, measurement,
 				common.TAggregationType_MAX_VALUE, 1,
 				&startTimeInMills, &endTimeInMills, &interval, &timeoutInMs, &useAlignedTimeseries)
@@ -169,11 +170,9 @@ func (p *processor) ProcessQuery(q query.Query, _ bool) ([]*query.Stat, error) {
 		return nil, err
 	}
 
-	took := time.Now().UnixNano() - start
-
-	lag := float64(took) / float64(time.Millisecond) // in milliseconds
+	took := float64(time.Since(start).Nanoseconds()) / 1e6
 	stat := query.GetStat()
-	stat.Init(q.HumanLabelName(), lag)
+	stat.Init(q.HumanLabelName(), took)
 	return []*query.Stat{stat}, err
 }
 
