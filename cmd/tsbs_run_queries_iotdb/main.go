@@ -68,7 +68,7 @@ func init() {
 	sessionPoolSize = viper.GetInt("session-pool-size")
 	timeoutInMs = 0
 
-	log.Printf("tsbs_run_queries_iotdb target: %s:%s. Loading with %d workers.\n", host, port, workers)
+	log.Printf("tsbs_run_queries_iotdb target: %s:%s. Loading with %d workers. session-pool-size: %d\n", host, port, workers, sessionPoolSize)
 	if workers < 5 {
 		log.Println("Insertion throughput is strongly related to the number of threads. Use more workers for better performance.")
 	}
@@ -206,7 +206,17 @@ func (p *processor) ProcessQuery(q query.Query, _ bool) ([]*query.Stat, error) {
 			}
 		}
 	} else {
-		dataSet, err = p.session.ExecuteQueryStatement(sql, &timeoutInMs)
+		if sessionPoolSize > 0 {
+			session, err := sessionPool.GetSession()
+			if err == nil {
+				dataSet, err = session.ExecuteQueryStatement(sql, &timeoutInMs)
+			} else {
+				log.Printf("Get session meets error.\n")
+			}
+			sessionPool.PutBack(session)
+		} else {
+			dataSet, err = p.session.ExecuteQueryStatement(sql, &timeoutInMs)
+		}
 	}
 
 	if err != nil {
