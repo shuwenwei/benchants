@@ -65,6 +65,7 @@ func init() {
 	usingGroupByApi = viper.GetBool("use-groupby")
 	singleDatabase = viper.GetBool("single-database")
 	useAlignedTimeseries = viper.GetBool("aligned-timeseries")
+	sessionPoolSize = viper.GetInt("session-pool-size")
 	timeoutInMs = 0
 
 	log.Printf("tsbs_run_queries_iotdb target: %s:%s. Loading with %d workers.\n", host, port, workers)
