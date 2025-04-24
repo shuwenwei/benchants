@@ -121,6 +121,16 @@ func (p *processor) Init(workerNumber int) {
 				log.Fatal(fmt.Sprintf("flush meets error: %v\n", err))
 			}
 		}
+	} else {
+		session, err := sessionPool.GetSession()
+		if err != nil {
+			log.Fatal(fmt.Sprintf("flush meets error: %v\n", err))
+		}
+		_, err = session.ExecuteStatement("flush")
+		if err != nil {
+			log.Fatal(fmt.Sprintf("flush meets error: %v\n", err))
+		}
+		sessionPool.PutBack(session)
 	}
 }
 
