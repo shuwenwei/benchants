@@ -33,6 +33,7 @@ var (
 	hashWorkers          bool
 	batchSize            uint
 	tabletSize           int
+	createTimeseries     bool
 )
 
 // Global vars
@@ -79,6 +80,7 @@ func init() {
 	batchSize = viper.GetUint("batch-size")
 	tabletSize = viper.GetInt("tablet-size")
 	workers := viper.GetUint("workers")
+	createTimeseries = viper.GetBool("init")
 
 	timeoutStr := fmt.Sprintf("timeout for session opening check: %d ms", timeoutInMs)
 	if timeoutInMs <= 0 {

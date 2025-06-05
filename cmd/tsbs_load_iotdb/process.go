@@ -78,7 +78,7 @@ func (p *processor) ProcessBatch(b targets.Batch, doLoad bool) (metricCount, row
 			for _, value := range values {
 				splits := strings.Split(value, ",")
 				if splits[0] == "tag" {
-					if !p.storeTags {
+					if !p.storeTags || !createTimeseries {
 						continue
 					}
 					kvString := splits[1]

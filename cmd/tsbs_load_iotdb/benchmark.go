@@ -13,18 +13,20 @@ import (
 
 func newBenchmark(clientConfig client.Config, loaderConfig load.BenchmarkRunnerConfig) targets.Benchmark {
 	return &iotdbBenchmark{
-		clientConfig:   clientConfig,
-		loaderConfig:   loaderConfig,
-		recordsMaxRows: recordsMaxRows,
-		tabletSize:     tabletSize,
+		clientConfig:     clientConfig,
+		loaderConfig:     loaderConfig,
+		recordsMaxRows:   recordsMaxRows,
+		tabletSize:       tabletSize,
+		createTimeseries: createTimeseries,
 	}
 }
 
 type iotdbBenchmark struct {
-	clientConfig   client.Config
-	loaderConfig   load.BenchmarkRunnerConfig
-	recordsMaxRows int
-	tabletSize     int
+	clientConfig     client.Config
+	loaderConfig     load.BenchmarkRunnerConfig
+	recordsMaxRows   int
+	tabletSize       int
+	createTimeseries bool
 }
 
 type iotdbIndexer struct {
