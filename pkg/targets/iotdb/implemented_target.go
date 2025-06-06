@@ -35,6 +35,7 @@ func (t *iotdbTarget) TargetSpecificFlags(flagPrefix string, flagSet *pflag.Flag
 	flagSet.Int(flagPrefix+"channel-capacity", 0, "Capacity of channel")
 	flagSet.Bool(flagPrefix+"flow-control", true, "Flow Control")
 	flagSet.Int(flagPrefix+"tablet-size", 20, "Tablet Size")
+	flagSet.Bool(flagPrefix+"init", true, "auto create timeseries")
 }
 
 func (t *iotdbTarget) TargetName() string {
